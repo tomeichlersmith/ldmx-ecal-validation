@@ -5,7 +5,7 @@ import os
 
 parser = argparse.ArgumentParser()
 
-parser.add_argument('--n-events',default=10,help='number of events to simulate')
+parser.add_argument('--n-events',default=10,type=int,help='number of events to simulate')
 parser.add_argument('--geometry',default=12,type=int,choices=[12,13,14],help='version of geometry to simulate')
 parser.add_argument('--run',default=1,help='run number (controls random number seeding)')
 parser.add_argument('--out-dir',default=os.getcwd(),help='directory to put output file into')
@@ -20,7 +20,7 @@ p.maxEvents = arg.n_events
 p.outputFiles = [ f'{arg.out_dir}/simulation_geometry_v{arg.geometry}_events_{arg.n_events}_run_{arg.run}.root' ]
 
 # we want to see every event
-p.logFrequency = 1
+p.logFrequency = 1000
 p.termLogLevel = 0
 
 from LDMX.SimCore import simulator
