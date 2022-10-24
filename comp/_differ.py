@@ -42,10 +42,28 @@ class Differ :
     def __init__(self, grp_name, *args) :
         self.grp_name = grp_name
         self.files = [
-                (uproot.open(path+':LDMX_Events'), name) for path, name in args
+                (uproot.open(path), name) for path, name in args
                 ]
-                
+
+    def __plt_hist(ax, uproot_obj, **kwargs) :
+        """Plot the input uproot object as a histogram on the input axes
+
+        If the uproot_obj is already a histogram we import its values and use
+        them directly. If the uproot_obj is a TBranch, then we pull its values
+        into memory and fill the histogram.
+        """
+
+        if issubclass(type(uproot_obj), uproot.behaviors.TH1.Histogram) :
+            edges = uproot_obj.axis('x').edges()
+            dim = len(edges.shape)
+            if dim > 1 :
+                raise KeyError(f'Attempted to do a 1D plot of a {dim} dimension histogram.')
+            return ax.hist((edges[1:]+edges[:-1])/2, bins=edges, weights=uproot_obj.values(), **kwargs)
+        else :
+            return ax.hist(uproot_obj.array(library='pd').values, **kwargs)
+        
     def fig(self) :
+        """Get the figure we are drawing on"""
         return self.__fig
 
     def plot1d(self, column, xlabel, 
@@ -63,9 +81,7 @@ class Differ :
             hist_kwargs['linewidth'] = 2
 
         for f, name in self.files :
-            ax.hist(f[column].array(library='pd').values,
-#                f[column].array(library='np'), 
-                label=name, **hist_kwargs)
+            Differ.__plt_hist(ax, f[column], label=name, **hist_kwargs)
 
         ax.set_xlabel(xlabel)
         ax.set_ylabel(ylabel)
@@ -79,5 +95,5 @@ class Differ :
             fn = column
             if file_name is not None :
                 fn = file_name
-            fig.savefig(os.path.join(out_dir,fn)+'.pdf')
+            fig.savefig(os.path.join(out_dir,fn)+'.pdf', bbox_inches='tight')
             fig.clf()
