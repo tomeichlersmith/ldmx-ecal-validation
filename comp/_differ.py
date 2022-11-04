@@ -1,8 +1,54 @@
-"""Hold the two files we are comparing together in one class"""
+"""Hold the two or more files we are comparing together in one class"""
 
 import uproot
 import matplotlib.pyplot as plt
 import os
+
+class FileEntry :
+    """File entry in Differ object
+
+    This should not be used directly by the user
+    """
+
+    def __init__(self, *args) :
+        self.__file = uproot.open(args[0])
+        self.__name = args[1]
+        if len(args) >= 2 :
+            self.__colmod = args[2]
+        else :
+            self.__colmod = None
+
+    def plot1d(self, ax, obj_name, **hist_kwargs) :
+        """Plot the input uproot object as a histogram on the input axes
+
+        If the uproot_obj is already a histogram we import its values and use
+        them directly. If the uproot_obj is a TBranch, then we pull its values
+        into memory and fill the histogram.
+
+        The input 'obj_name' is transformed by __colmod if that member is set.
+        """
+        
+        if 'histtype' not in hist_kwargs :
+            hist_kwargs['histtype'] = 'step'
+        if 'linewidth' not in hist_kwargs :
+            hist_kwargs['linewidth'] = 2
+        if 'label' not in hist_kwargs :
+            hist_kwargs['label'] = self.__name
+
+        if self.__colmod is not None :
+            obj_name = self.__colmod(obj_name)
+
+        obj = self.__file[obj_name]
+
+        if issubclass(type(obj), uproot.behaviors.TH1.Histogram) :
+            edges = obj.axis('x').edges()
+            dim = len(edges.shape)
+            if dim > 1 :
+                raise KeyError(f'Attempted to do a 1D plot of a {dim} dimension histogram.')
+            return ax.hist((edges[1:]+edges[:-1])/2, bins=edges, weights=obj.values(), **hist_kwargs)
+        else :
+            return ax.hist(obj.array(library='pd').values, **hist_kwargs)
+        
 
 class Differ :
     """Differ allowing easy comparison of "similar" files
@@ -41,47 +87,19 @@ class Differ :
 
     def __init__(self, grp_name, *args) :
         self.grp_name = grp_name
-        self.files = [
-                (uproot.open(path), name) for path, name in args
-                ]
-
-    def __plt_hist(ax, uproot_obj, **kwargs) :
-        """Plot the input uproot object as a histogram on the input axes
-
-        If the uproot_obj is already a histogram we import its values and use
-        them directly. If the uproot_obj is a TBranch, then we pull its values
-        into memory and fill the histogram.
-        """
-
-        if issubclass(type(uproot_obj), uproot.behaviors.TH1.Histogram) :
-            edges = uproot_obj.axis('x').edges()
-            dim = len(edges.shape)
-            if dim > 1 :
-                raise KeyError(f'Attempted to do a 1D plot of a {dim} dimension histogram.')
-            return ax.hist((edges[1:]+edges[:-1])/2, bins=edges, weights=uproot_obj.values(), **kwargs)
-        else :
-            return ax.hist(uproot_obj.array(library='pd').values, **kwargs)
-        
-    def fig(self) :
-        """Get the figure we are drawing on"""
-        return self.__fig
+        self.files = [ FileEntry(*pack) for pack in args ]
 
     def plot1d(self, column, xlabel, 
-              ylabel = 'Hit Count',
+              ylabel = 'Count',
               yscale = 'log',
               ylim = (None,None),
               out_dir = None, file_name = None,
               **hist_kwargs) :
         fig = plt.figure('differ',figsize=(11,8))
         ax = fig.subplots()
-        
-        if 'histtype' not in hist_kwargs :
-            hist_kwargs['histtype'] = 'step'
-        if 'linewidth' not in hist_kwargs :
-            hist_kwargs['linewidth'] = 2
 
-        for f, name in self.files :
-            Differ.__plt_hist(ax, f[column], label=name, **hist_kwargs)
+        for f in self.files :
+            f.plot1d(ax, column, **hist_kwargs)
 
         ax.set_xlabel(xlabel)
         ax.set_ylabel(ylabel)
