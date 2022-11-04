@@ -3,7 +3,10 @@
 import argparse
 import os
 import re
+import matplotlib as mpl
+mpl.use('Agg')
 from _differ import Differ
+import time
 
 import matplotlib.pyplot as plt
 import mplhep
@@ -16,7 +19,7 @@ def extract_parameters(fn) :
 # guard incase someone imports this somehow
 if __name__ == '__main__' :
     parser = argparse.ArgumentParser(
-        """
+        description="""
         Make comparison plots between different geometries.
 
         We assume that the input files are written out in the
@@ -28,6 +31,8 @@ if __name__ == '__main__' :
     parser.add_argument('dev',help='directory of event and histogram files from new developments')
     parser.add_argument('--label',help='label for developments, defaults to dev directory name')
     parser.add_argument('--out-dir',help='directory to which to print plots. defaults to input data dev dir')
+    parser.add_argument('--last-valid',help='Diretory with event and histogram files from last major validation')
+    parser.add_argument('--last-valid-name', help='Name of last major validation (defaults to directory name)')
 
     arg = parser.parse_args()
 
@@ -43,13 +48,29 @@ if __name__ == '__main__' :
     out_dir = dev
     if arg.out_dir is not None :
         out_dir = arg.out_dir
-    
+
     root_files = [ 
         (os.path.join(dev,f), extract_parameters(f)) 
         for f in os.listdir(dev) if f.endswith('.root') 
         ]
 
+    last_valid_files = []
+    last_valid = arg.last_valid
+    if last_valid is not None :
+        if last_valid.endswith('/') :
+            last_valid = last_valid[:-1]
+        last_valid_name = os.path.basename(last_valid)
+        if arg.last_valid_name is not None :
+            last_valid_name = arg.last_valid_name
+
+        last_valid_files = [
+            (os.path.join(last_valid,f), extract_parameters(f))
+            for f in os.listdir(last_valid) if f.endswith('.root')
+            ]
+
     histo_files = [ (fp, params['geometry']) for fp, (t, params) in root_files if t == 'histos' ]
+    histo_files.extend([ (fp, last_valid_name+' '+params['geometry']) for fp, (t, params) in last_valid_files if t == 'histos' ])
+
     hd = Differ(label, *histo_files)
 
     shower_feats = [
@@ -65,16 +86,38 @@ if __name__ == '__main__' :
         ('EcalShowerFeatures/EcalShowerFeatures_avg_layer_hit', 'Avg Layer Hit'),
         ('EcalShowerFeatures/EcalShowerFeatures_std_layer_hit', 'Std Dev Layer Hit')
         ]
+    histo_draw_times = []
     for path, name in shower_feats :
-          hd.plot1d(path, name, 
-                    file_name = re.sub(r'^.*/','',path),
-                    out_dir = out_dir)
+        start = time.time()
+        hd.plot1d(path, name, 
+                  file_name = re.sub(r'^.*/','',path),
+                  out_dir = out_dir)
+        histo_draw_times.append(time.time() - start)
+
 
     event_files = [ (fp, params['geometry']) for fp, (t, params) in root_files if t == 'events' ]
+    event_files.extend([ (fp, last_valid_name+' '+params['geometry']) for fp, (t, params) in last_valid_files if t == 'events' ])
     ed = Differ(arg.label, *event_files)
-    ed.plot1d('LDMX_Events/EcalSimHits_valid/EcalSimHits_valid.edep_',
-              'Sim Energy Dep [MeV]',
-              bins=50, range=(0,30),
-              file_name = 'edep',
-              out_dir = out_dir)
+    event_draw_times = []
 
+    shower_feats = [
+        ('LDMX_Events/EcalVeto_valid/nReadoutHits_', 'N Readout Hits', dict(bins=100,range=(0,300))),
+        ('LDMX_Events/EcalVeto_valid/deepestLayerHit_', 'Deepest Layer Hit', dict(bins=40,range=(0,40))),
+        ('LDMX_Events/EcalVeto_valid/summedDet_', 'Total Rec Energy [MeV]', dict(bins=800,range=(0,8000))),
+        ('LDMX_Events/EcalVeto_valid/summedTightIso_', 'Total Isolated Energy [MeV]', dict(bins=400,range=(0,4000))),
+        ('LDMX_Events/EcalVeto_valid/maxCellDep_', 'Max Single-Cell Energy Dep [MeV]', dict(bins=100,range=(0,1000))),
+        ('LDMX_Events/EcalVeto_valid/showerRMS_', 'Transverse Shower RMS [mm]', dict(bins=200,range=(0,200))),
+        ('LDMX_Events/EcalVeto_valid/xStd_', 'X Std Deviation [mm]', dict(bins=200,range=(0,200))),
+        ('LDMX_Events/EcalVeto_valid/yStd_', 'Y Std Deviation [mm]', dict(bins=200,range=(0,200))),
+        ('LDMX_Events/EcalVeto_valid/avgLayerHit_', 'Avg Layer Hit', dict(bins=40,range=(0,40))),
+        ('LDMX_Events/EcalVeto_valid/stdLayerHit_', 'Std Dev Layer Hit', dict(bins=20,range=(0,20)))
+        ]
+    for path, name, kw in shower_feats :
+        start = time.time()
+        ed.plot1d(path, name, **kw,
+                  file_name = re.sub(r'^.*/','',path),
+                  out_dir = out_dir)
+        event_draw_times.append(time.time() - start)
+
+    print('Histos:', sum(histo_draw_times)/len(histo_draw_times))
+    print('Events:', sum(event_draw_times)/len(event_draw_times))
