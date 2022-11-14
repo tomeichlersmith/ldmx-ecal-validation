@@ -18,6 +18,14 @@ class FileEntry :
         else :
             self.__colmod = None
 
+    def keys(self, *args, **kwargs) :
+        """Callback into uproot keys
+
+        Helpful for exploring the file when trying to decide
+        what to plot within a notebook
+        """
+        return self.__file.keys(*args, **kwargs)
+
     def plot1d(self, ax, obj_name, **hist_kwargs) :
         """Plot the input uproot object as a histogram on the input axes
 
