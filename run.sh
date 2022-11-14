@@ -5,11 +5,11 @@
 __usage__() {
   cat <<HELP
  USAGE:
-  ./run.sh [-o|--out-dir OUT_DIR] [-N|--n-events NUM_EVENTS]
+  ldmx ./run.sh [-o|--out-dir OUT_DIR] [-N|--n-events NUM_EVENTS]
 
  OPTIONS:
-  -o, --out-dir  : Base output directory for data files (default: 'data/<git describe --tags>')
-  -N, --n-events : Number of events per geometry to simulate
+  -o, --out-dir  : Base output directory for data files
+  -N, --n-events : Number of events per geometry to simulate (default: 10k)
 
 HELP
 }
@@ -20,7 +20,6 @@ __main__() {
     echo "  source the ldmx-env.sh script in ldmx-sw."
     return 1
   fi
-  #local _tag=$(git -C ${LDMX_BASE}/ldmx-sw describe --tags)
   local _output_dir=$(cd data && pwd -P)/dev
   local _n_events=10000
   while [ $# -gt 0 ]; do
