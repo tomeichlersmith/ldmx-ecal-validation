@@ -13,7 +13,7 @@ class FileEntry :
     def __init__(self, *args) :
         self.__file = uproot.open(args[0])
         self.__name = args[1]
-        if len(args) >= 2 :
+        if len(args) > 2 :
             self.__colmod = args[2]
         else :
             self.__colmod = None

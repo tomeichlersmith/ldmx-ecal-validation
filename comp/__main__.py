@@ -33,7 +33,7 @@ if __name__ == '__main__' :
     parser.add_argument('dev',help='directory of event and histogram files from new developments')
     parser.add_argument('--label',help='label for developments, defaults to dev directory name')
     parser.add_argument('--out-dir',help='directory to which to print plots. defaults to input data dev dir')
-    parser.add_argument('--last-valid',help='Diretory with event and histogram files from last major validation')
+    parser.add_argument('--last-valid',help='Directory with event and histogram files from last major validation')
     parser.add_argument('--last-valid-name', help='Name of last major validation (defaults to directory name)')
     parser.add_argument('--do-histos',help='Do already-written histograms in histo files',action='store_true')
 
@@ -53,7 +53,7 @@ if __name__ == '__main__' :
         out_dir = arg.out_dir
 
     def generate_colmod(fp) :
-        if fp.startswith('rereco') :
+        if 'rereco' in fp :
             def colmod(c) :
                 return c.replace('valid','rereco')
             return colmod
@@ -115,11 +115,12 @@ if __name__ == '__main__' :
     event_files.extend([ 
       (fp, last_valid_name+' '+params['geometry']) 
       for fp, (t, params) in last_valid_files if t == 'events' ])
-    ed = Differ(arg.label, *event_files)
+    print(event_files)
+    ed = Differ(label, *event_files)
     event_draw_times = []
 
     shower_feats = [
-        ('LDMX_Events/EcalVeto_valid/nReadoutHits_', 'N Readout Hits', dict(bins=100,range=(0,300))),
+        ('LDMX_Events/EcalVeto_valid/nReadoutHits_', 'N Readout Hits', dict()), #bins=100,range=(0,3000))),
         ('LDMX_Events/EcalVeto_valid/deepestLayerHit_', 'Deepest Layer Hit', dict(bins=40,range=(0,40))),
         ('LDMX_Events/EcalVeto_valid/summedDet_', 'Total Rec Energy [MeV]', dict(bins=800,range=(0,8000))),
         ('LDMX_Events/EcalVeto_valid/summedTightIso_', 'Total Isolated Energy [MeV]', dict(bins=400,range=(0,4000))),
