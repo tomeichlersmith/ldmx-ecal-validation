@@ -19,13 +19,16 @@ from LDMX.Framework import ldmxcfg
 if not os.path.isdir(arg.out_dir) :
     raise KeyError(f'Need to create output directory {arg.out_dir}')
 
+full_out_dir = os.path.join(arg.out_dir, arg.sim)
+os.makedirs(full_out_dir, exist_ok=True)
+
 p = ldmxcfg.Process( "valid" )
 p.run = arg.run
 p.maxEvents = arg.n_events
 p.maxTriesPerEvent = 10000
 file_stub = f'sim_{arg.sim}_geometry_v{arg.geometry}_events_{arg.n_events}_run_{arg.run}.root'
-p.outputFiles = [ arg.out_dir+'/events_'+file_stub ]
-p.histogramFile = arg.out_dir+'/histos_'+file_stub
+p.outputFiles = [ full_out_dir+'/type_events_'+file_stub ]
+p.histogramFile = full_out_dir+'/type_histos_'+file_stub
 
 # we want to see every event
 p.logFrequency = 1000
