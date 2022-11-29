@@ -3,6 +3,15 @@
 This repository is focused on storing configuration scripts for `fire` and python-based analyses
 related to validating the simulated geometry of the ECal.
 
+## Installing the Validation Module
+We have a python module in development that was originally here but has been moved to ldmx-sw
+so that we can share it more broadly. Right now, it resides on a specific branch of ldmx-sw.
+```
+cd ldmx-sw
+git checkout iss1114
+python3 -m pip install Validation/
+```
+
 ## Running the Simulation
 The simulation is run via `ldmx fire` with the [config script](simulation.py) in this repository.
 Generally, you want to simulate both the v12 and v14 geometries, which would require two runs.
