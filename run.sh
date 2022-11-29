@@ -77,7 +77,7 @@ __main__() {
       --out-dir ${_output_dir} \
       --sim ${_sim} \
       --geometry ${g} \
-      &> ${_output_dir}/simulation_v${g}.log &
+      &> ${_output_dir}/sim_${_sim}_v${g}.log &
   done
   wait
 }
