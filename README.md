@@ -11,6 +11,19 @@ cd ldmx-sw
 git checkout iss1114
 python3 -m pip install Validation/
 ```
+If you are going to make changes to the code in the Validation module, it is advised
+to use an "editable" install inside of a virtual environment.
+```
+# in this directory
+python3 -m venv .venv --prompt valid
+source .venv/bin/activate
+cd ../ldmx-sw
+python3 -m pip install -e Validation
+```
+Then in subsequent sessions, you just need to `source .venv/bin/activate` from this
+directory so that you can start using the Validation module that is in the source
+directory. **Note**: This means if you switch to a branch that does not have the Validation
+files, the module will not be available to be used.
 
 ## Running the Simulation
 The simulation is run via `ldmx fire` with the [config script](simulation.py) in this repository.
@@ -62,3 +75,9 @@ ldmx ./run.sh -o data/<specific-version-name> -N <n-events>
 The analysis code largely consists of filling and drawing histograms.
 As a first step, use [the testing notebook](test.ipynb) as an example for
 using the `comp` package.
+
+## Table of Contents
+- run.sh : a helper script for roughly parallelizing the two geometry runs
+- simulation.py : the config to run the simulations
+- rereco.py : a config to re-run the reconstruction if only reco-level changes were made
+- test.ipynb : testing the Validation module and other scratch work
