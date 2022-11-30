@@ -3,27 +3,6 @@
 This repository is focused on storing configuration scripts for `fire` and python-based analyses
 related to validating the simulated geometry of the ECal.
 
-## Installing the Validation Module
-We have a python module in development that was originally here but has been moved to ldmx-sw
-so that we can share it more broadly. Right now, it resides on a specific branch of ldmx-sw.
-```
-cd ldmx-sw
-git checkout iss1114
-python3 -m pip install Validation/
-```
-If you are going to make changes to the code in the Validation module, it is advised
-to use an "editable" install inside of a virtual environment.
-```
-# in this directory
-python3 -m venv .venv --prompt valid
-source .venv/bin/activate
-cd ../ldmx-sw
-python3 -m pip install -e Validation
-```
-Then in subsequent sessions, you just need to `source .venv/bin/activate` from this
-directory so that you can start using the Validation module that is in the source
-directory. **Note**: This means if you switch to a branch that does not have the Validation
-files, the module will not be available to be used.
 
 ## Running the Simulation
 The simulation is run via `ldmx fire` with the [config script](simulation.py) in this repository.
@@ -73,8 +52,28 @@ ldmx ./run.sh -o data/<specific-version-name> -N <n-events>
 
 ## Running the Analysis
 The analysis code largely consists of filling and drawing histograms.
-As a first step, use [the testing notebook](test.ipynb) as an example for
-using the `comp` package.
+
+### Installing the Validation Module
+We have a python module in development that was originally here but has been moved to ldmx-sw
+so that we can share it more broadly. Right now, it resides on a specific branch of ldmx-sw.
+```
+cd ldmx-sw
+git checkout iss1114
+python3 -m pip install Validation/
+```
+If you are going to make changes to the code in the Validation module, it is advised
+to use an "editable" install inside of a virtual environment.
+```
+# in this directory
+python3 -m venv .venv --prompt valid
+source .venv/bin/activate
+cd ../ldmx-sw
+python3 -m pip install -e Validation
+```
+Then in subsequent sessions, you just need to `source .venv/bin/activate` from this
+directory so that you can start using the Validation module that is in the source
+directory. **Note**: This means if you switch to a branch that does not have the Validation
+files, the module will not be available to be used.
 
 ## Table of Contents
 - run.sh : a helper script for roughly parallelizing the two geometry runs
