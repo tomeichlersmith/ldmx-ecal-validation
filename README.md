@@ -3,7 +3,6 @@
 This repository is focused on storing configuration scripts for `fire` and python-based analyses
 related to validating the simulated geometry of the ECal.
 
-
 ## Running the Simulation
 The simulation is run via `ldmx fire` with the [config script](simulation.py) in this repository.
 Generally, you want to simulate both the v12 and v14 geometries, which would require two runs.
@@ -80,3 +79,4 @@ files, the module will not be available to be used.
 - simulation.py : the config to run the simulations
 - rereco.py : a config to re-run the reconstruction if only reco-level changes were made
 - test.ipynb : testing the Validation module and other scratch work
+- [characterize](characterize) the ECal's performance in simulation
