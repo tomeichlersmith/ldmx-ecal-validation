@@ -19,6 +19,8 @@ p.inputFiles = arg.input_files
 file_stub = os.path.basename(p.inputFiles[0])
 out_dir = os.path.dirname(p.inputFiles[0]) if arg.out_dir is None else arg.out_dir
 
+os.makedirs(out_dir, exist_ok=True)
+
 p.outputFiles = [ os.path.join(out_dir,'rereco_'+file_stub) ]
 
 # we want to see every event
