@@ -30,6 +30,9 @@ So if I have a set of measurements, the following python code snippet
 calculates the mean, std, resolution, and accuracy.
 ```python
 import numpy as np
+# below, I randomly generate "measurements" from a normal distribution
+#   in our work with the ECal, these measurements will actually be
+#   taken from the output of the simulation using uproot
 true_value = 10
 true_width = 5
 measurements = np.random.normal(true_value, true_width, 10000)
@@ -49,8 +52,10 @@ from scipy.stats import norm
 import numpy as np
 measurements = np.random.normal(true_value, true_width, 10000)
 
+# plot the raw data has a histogram
 bin_values, bin_edges, art = plt.hist(measurements, bins='auto', label='data')
 bin_centers = (bin_edges[1:]+bin_edges[:-1])/2
+# plot an actual normal distribution on top to see if the histogram follows that shape
 plt.plot(bin_centers, norm.pdf(bin_centers, measurements.mean(), meansurements.std(), label='real normal')
 ```
 
