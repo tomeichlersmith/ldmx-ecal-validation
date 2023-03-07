@@ -9,7 +9,10 @@ A normal distribution is completely characterized by its mean and
 its standard deviation. In order to compare several different normal
 distributions with different means and get an idea about which is "wider"
 than another, we can divide the standard deviation by the mean to get
-(what I call) the _resolution_.
+(what I call) the _resolution_. [^1]
+
+[^1]: The technical term for this value is the 
+[Coefficent of Variation](https://en.wikipedia.org/wiki/Coefficient_of_variation)
 
 For our purposes, a lower value for the resolution is better since that
 means our measurement is more precise. Additionally, in simulations we
