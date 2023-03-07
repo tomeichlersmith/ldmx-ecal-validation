@@ -68,3 +68,21 @@ bins as the "measurements" and the values in the bins as the "weights".
 approx_mean = np.average(bin_centers, weights=bin_values)
 approx_stdd = np.sqrt(np.average((bin_centers-approx_mean)**2, weights=bin_values))
 ```
+
+## Plotting
+There are several plots that are commonly made when studying the resolution of things.
+I'm listing them here just as reference.
+
+#### Symbols
+Not necessarily standard but helpful to be on the same page.
+- $E_{meas}$ the reconstructed total energy measured by the ECal
+- $E_{true}$ the known energy of the particle entering the ECal
+- $\langle X \rangle$ the mean of samples of $X$
+- $\sigma_X$ the standard deviation of samples of $X$
+
+#### Plots
+- Histogram of $E_{meas}/E_{true}$: this helps us see the shap of the distributions and
+  dividing by the known beam energy allows us to overlay several different beam energies
+  and compare their shapes.
+- Plot of $\langle E_{meas} \rangle/E_{true}$ vs $E_{true}$ shows how the mean changes with beam energy
+- Plot of $\sigma_E / \langle E_{meas} \rangle$ vs $E_{true}$ shows how the variation changes with beam energy
