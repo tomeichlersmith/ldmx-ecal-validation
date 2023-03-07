@@ -84,5 +84,5 @@ Not necessarily standard but helpful to be on the same page.
 - Histogram of $E_{meas}/E_{true}$: this helps us see the shap of the distributions and
   dividing by the known beam energy allows us to overlay several different beam energies
   and compare their shapes.
-- Plot of $\langle E_{meas} \rangle/E_{true}$ vs $E_{true}$ shows how the mean changes with beam energy
-- Plot of $\sigma_E / \langle E_{meas} \rangle$ vs $E_{true}$ shows how the variation changes with beam energy
+- Plot of $\langle E_{meas} \rangle/E_{true}$ vs $\langle E_{meas} \rangle$ shows how the mean changes with beam energy
+- Plot of $\sigma_E / \langle E_{meas} \rangle$ vs $\langle E_{meas} \rangle$ shows how the variation changes with beam energy
