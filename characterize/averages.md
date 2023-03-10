@@ -42,7 +42,17 @@ to have any sample that is further from the mean by X standard deviations be con
 an outlier.
 
 NumPy does not have a function for this type of mean to my knowledge, so we will construct
-our own.
+our own. The key aspect of NumPy I use is 
+[boolean array indexing](https://numpy.org/doc/stable/user/basics.indexing.html#boolean-array-indexing)
+which is one of many different ways NumPy allows you to access the contents of an array.
+In this case, I access certain elements of an array by constructing another array of True/False
+values (in the code below, this boolean array is called `selection`) and then when I use
+that array as the "index" (the stuff between the square brackets), only the values of the
+array that correspond to `True` values will be returned in the output array. I construct
+this boolean array by [broadcasting](https://numpy.org/doc/stable/user/basics.broadcasting.html)
+a certain comparison against every element in the array. Using broadcasting shortens the
+code by removing the manual `for` loop _and_ makes the code faster since NumPy can move that
+`for` loop into it's under-the-hood, faster operations in C.
 
 **Code**:
 ```python
@@ -63,6 +73,9 @@ def weightedmean(values, weights = None) :
 
     if weights is None :
         weights = np.full(len(values),1.)
+        
+    if len(weights) != len(values) :
+        raise ValueError('Weights must be an array the same length as values')
 
     mean = (weights*values).sum()/(weights.sum())
     stdd = np.sqrt((weights*(values-mean)**2).sum()/(weights.sum()))
@@ -90,10 +103,11 @@ def itermean(values, weights = None, *, sigma_cut = 3.0) :
         num_included = np.count_nonzero(selection)
         # calculate mean and std dev
         mean, stdd = weightedmean(values[selection], weights[selection])
-        # determine new selection
+        # determine new selection, since this variable was defined outside
+        #   the loop, we can use it in the `while` line and it will just be updated
         selection = (values > (mean - sigma_cut*stdd)) & (values < (mean + sigma_cut*stdd)) & (weights > 0)
 
-    # left loop, meaning we settled into a state where nothing it outside sigma_cut standard deviations
+    # left loop, meaning we settled into a state where nothing is outside sigma_cut standard deviations
     #   from our mean
     return mean, stdd
 ```
