@@ -17,8 +17,9 @@ There are a few different types of [averages](averages.md) that we will use as w
 - [x] run simulations of varying energies
 - [x] load measured energy and plot histograms of accuracy samples
 - [x] calculate energy resolution and accuracy and plot various beam energies to show trends (including error bars to reflect statistical uncertainty)
-- [ ] imbue code with more structure with `pandas.DataFrame` so that it can be more flexible
+- [x] imbue code with more structure with `pandas.DataFrame` so that it can be more flexible
 - [ ] use `mplhep` to make plots look more familiar to ROOT users
+- [ ] characterize ECal energy resolution for various electron and photon beams
 
 ## Tools
 - jupyter lab
