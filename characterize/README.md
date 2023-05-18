@@ -19,7 +19,15 @@ There are a few different types of [averages](averages.md) that we will use as w
 - [x] calculate energy resolution and accuracy and plot various beam energies to show trends (including error bars to reflect statistical uncertainty)
 - [x] imbue code with more structure with `pandas.DataFrame` so that it can be more flexible
 - [ ] use `mplhep` to make plots look more familiar to ROOT users
+- [ ] plotting functions (i.e. isolate and generalize important procedures)
+    - [ ] given list of files, make resolution and accuracy plots
 - [ ] characterize ECal energy resolution for various electron and photon beams
+- [ ] plot distribution of earliest layer with 5% of total energy accumulated up to it
+  - "accumulated up to it" means all the energy in layer N and layers less than N
+
+## Technical Tasks for Tom
+- [x] add angular options to fire config
+- [ ] figure out how to turn off photon-nuclear interactions
 
 ## Tools
 - jupyter lab
