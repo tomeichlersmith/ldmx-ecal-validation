@@ -12,6 +12,15 @@ the number of samples.
 
 **Code**: [`np.mean`](https://numpy.org/doc/stable/reference/generated/numpy.mean.html)
 
+How do we calculate the "error" on the mean? While the standard deviation shows the 
+width of a normal distribution, what shows the "uncertainty" in how well we know what
+the center of that distribution is? The value we use for this is "standard error of the
+mean" (or just "standard error" for short). The 
+[wikipedia page](https://en.wikipedia.org/wiki/Standard_error) gives a description 
+in all its statistics glory, but for our purposes its helpful to remember that the
+error of the mean is the standard deviation divided by the square root of the number
+of samples.
+
 ### median
 The middle number of the group of samples when ranked in order. If there are an even
 number of samples, then take the arithmetic mean of the two samples in the middle.
@@ -59,7 +68,7 @@ code by removing the manual `for` loop _and_ makes the code faster since NumPy c
 import numpy as np
 
 # first I write my own mean calculation that includes the possibility of weights
-#   and returns both the mean and standard deviation
+#   and returns the mean, standard deviation, and the error of the mean
 def weightedmean(values, weights = None) :
     """calculate the weighted mean and standard deviation of the input values
     
@@ -79,7 +88,8 @@ def weightedmean(values, weights = None) :
 
     mean = (weights*values).sum()/(weights.sum())
     stdd = np.sqrt((weights*(values-mean)**2).sum()/(weights.sum()))
-    return mean, stdd
+    merr = stdd/np.sqrt(weights.sum())
+    return mean, stdd, merr
 
 # now I can write the iterative mean
 def itermean(values, weights = None, *, sigma_cut = 3.0) :
@@ -95,7 +105,7 @@ def itermean(values, weights = None, *, sigma_cut = 3.0) :
     if weights is None :
         weights = np.full(len(values), 1.)
 
-    mean, stdd = weightedmean(values, weights)
+    mean, stdd, merr = weightedmean(values, weights)
     num_included = len(weights)+1 # just to get loop started
     selection = (weights > 0) # first selection is all non-zero weighted samples
     while np.count_nonzero(selection) < num_included :
@@ -109,6 +119,6 @@ def itermean(values, weights = None, *, sigma_cut = 3.0) :
 
     # left loop, meaning we settled into a state where nothing is outside sigma_cut standard deviations
     #   from our mean
-    return mean, stdd
+    return mean, stdd, merr
 ```
 
