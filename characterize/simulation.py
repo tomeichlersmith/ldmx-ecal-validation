@@ -72,6 +72,10 @@ validator.setDetector(f'ldmx-det-v14', False)
 validator.description = 'Electrons straight into ECal for ECal geometry testing'
 validator.generators = [electrons]
 
+# turn off all PN interactions so we have a "clean" EM shower
+from LDMX.SimCore import photonuclear_models as pn
+validator.photonuclear_model = pn.NoPhotoNuclearModel()
+
 reco = ecal_digi.EcalRecProducer()
 veto = ecal_vetos.EcalVetoProcessor()
 digi = ecal_digi.EcalDigiProducer()
