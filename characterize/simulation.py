@@ -6,11 +6,11 @@ import os
 parser = argparse.ArgumentParser()
 
 parser.add_argument('--n-events',default=10,type=int,help='number of events to simulate')
-parser.add_argument('--run',default=1,help='run number (controls random number seeding)')
+parser.add_argument('--run',default=1,type=int,help='run number (controls random number seeding)')
 parser.add_argument('--out-dir',default=os.getcwd(),help='directory to put output file into')
-parser.add_argument('--energy',default=4.,help='energy of incident electron in GeV')
-parser.add_argument('--theta',default=0,help='angle incident electron makes with respect to z-axis in degrees')
-parser.add_argument('--phi', default=0, help='azimuthal angle incident electron makes')
+parser.add_argument('--energy',default=4.,type=float,help='energy of incident electron in GeV')
+parser.add_argument('--theta',default=0,type=float,help='angle incident electron makes with respect to z-axis in degrees')
+parser.add_argument('--phi', default=0,type=float,help='azimuthal angle incident electron makes')
 parser.add_argument('--angle-at-target',action='store_true', help='have the initial position shift so that the angles are from the target')
 
 arg = parser.parse_args()
