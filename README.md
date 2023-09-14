@@ -80,3 +80,4 @@ files, the module will not be available to be used.
 - rereco.py : a config to re-run the reconstruction if only reco-level changes were made
 - test.ipynb : testing the Validation module and other scratch work
 - [characterize](characterize) the ECal's performance in simulation
+- [dimuon calibration](dimuon-calibration) studying how frequently a given cell has a muon pass through it for calibration purposes
