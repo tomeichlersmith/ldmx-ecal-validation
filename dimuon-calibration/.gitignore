@@ -1,0 +1,7 @@
+# hidden directories that jupyter-scikit-hep puts
+# in whichever directory it is run from
+.local
+.npm
+.cache
+.ipython
+.jupyter
