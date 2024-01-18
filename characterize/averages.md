@@ -72,12 +72,8 @@ import numpy as np
 def weightedmean(values, weights = None) :
     """calculate the weighted mean and standard deviation of the input values
     
-    If no weights are provided, then we assume they are all one.
-
-    This is definitely slower than the pure-C NumPy implementation when
-    the weights are all one, but we want to include the possibility of the 
-    weights not being one _and_ the ability to calculate weighted standard
-    deviations.
+    This function isn't /super/ necessary, but it is helpful for the itermean
+    function below where the same code needs to be called in multiple times.
     """ 
     mean = np.average(values, weights=weights)
     stdd = np.sqrt(np.average((values-mean)**2, weights=weights))
