@@ -78,16 +78,9 @@ def weightedmean(values, weights = None) :
     the weights are all one, but we want to include the possibility of the 
     weights not being one _and_ the ability to calculate weighted standard
     deviations.
-    """
-
-    if weights is None :
-        weights = np.full(len(values),1.)
-        
-    if len(weights) != len(values) :
-        raise ValueError('Weights must be an array the same length as values')
-
-    mean = (weights*values).sum()/(weights.sum())
-    stdd = np.sqrt((weights*(values-mean)**2).sum()/(weights.sum()))
+    """ 
+    mean = np.average(values, weights=weights)
+    stdd = np.sqrt(np.average((values-mean)**2, weights=weights))
     merr = stdd/np.sqrt(weights.sum())
     return mean, stdd, merr
 
@@ -100,11 +93,6 @@ def itermean(values, weights = None, *, sigma_cut = 3.0) :
     If a sample is further from the mean than the sigma_cut times
     the standard deviation, it is removed.
     """
-
-    # calculate weights once for ease
-    if weights is None :
-        weights = np.full(len(values), 1.)
-
     mean, stdd, merr = weightedmean(values, weights)
     num_included = len(weights)+1 # just to get loop started
     selection = (weights > 0) # first selection is all non-zero weighted samples
@@ -112,7 +100,7 @@ def itermean(values, weights = None, *, sigma_cut = 3.0) :
         # update number included for this mean
         num_included = np.count_nonzero(selection)
         # calculate mean and std dev
-        mean, stdd = weightedmean(values[selection], weights[selection])
+        mean, stdd, merr = weightedmean(values[selection], weights[selection] if weights is not None else None)
         # determine new selection, since this variable was defined outside
         #   the loop, we can use it in the `while` line and it will just be updated
         selection = (values > (mean - sigma_cut*stdd)) & (values < (mean + sigma_cut*stdd)) & (weights > 0)
